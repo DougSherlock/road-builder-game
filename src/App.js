@@ -5,11 +5,37 @@ function App() {
   
   const [board, setBoard] = useState(
   [
-    [{type:'City', id:0}, { type:'Road', closed:0, cities:[0, 1]}, {type:'City', id:1}, { type:'Road', closed:0, cities:[1, 2]}, {type:'City', id:2}],
-    [{type:'Road', closed:0, cities:[0, 3] }, { type:'Empty' }, {type:'Road', closed:0, cities:[1, 4]}, { type:'Empty' }, {type:'Road', closed:0, cities:[2, 5]}],
-    [{type:'City', id:0}, { type:'Road', closed:0, cities:[0, 1]}, {type:'City', id:1}, { type:'Road', closed:0, cities:[1, 2]}, {type:'City', id:2}],
-    [{type:'Road', closed:0, cities:[0, 3] }, { type:'Empty' }, {type:'Road', closed:0, cities:[1, 4]}, { type:'Empty' }, {type:'Road', closed:0, cities:[2, 5]}],
-    [{type:'City', id:0}, { type:'Road', closed:0, cities:[0, 1]}, {type:'City', id:1}, { type:'Road', closed:0, cities:[1, 2]}, {type:'City', id:2}]
+    [
+      {type:'City', id:0}, 
+      { type:'Road', closed:0, cities:[0, 1]}, 
+      {type:'City', id:1}, 
+      { type:'Road', closed:0, cities:[1, 2]}, 
+      {type:'City', id:2}],
+    [
+      {type:'Road', closed:0, cities:[0, 3] }, 
+      { type:'Empty' }, 
+      {type:'Road', closed:0, cities:[1, 4]}, 
+      { type:'Empty' }, 
+      {type:'Road', closed:0, cities:[2, 5]}],
+    [
+      {type:'City', id:3}, 
+      { type:'Road', closed:0, cities:[3, 4]}, 
+      {type:'City', id:4}, 
+      { type:'Road', closed:0, cities:[4, 5]}, 
+      {type:'City', id:5}],
+    [
+      {type:'Road', closed:0, cities:[3, 6] }, 
+      { type:'Empty' }, 
+      {type:'Road', closed:0, cities:[4, 7]}, 
+      { type:'Empty' }, 
+      {type:'Road', closed:0, cities:[5, 8]}],
+    [
+      {type:'City', id:6}, 
+      { type:'Road', closed:0, cities:[6, 7]}, 
+      {type:'City', id:7}, 
+      { type:'Road', closed:0, cities:[7, 8]}, 
+      {type:'City', id:8}
+    ]
   ])
 
   const traverse = () => {
@@ -18,7 +44,15 @@ function App() {
   const onRoadClicked = (e) => {
     let boardCopy = JSON.parse(JSON.stringify(board));
     const row = e.target.getAttribute('row');
+    if (row === undefined || row >= boardCopy.length) {
+      alert('Row error: ' + row);
+      return;
+    }
     const col = e.target.getAttribute('col');
+    if (col === undefined || col >= boardCopy[row].length) {
+      alert('Col error: ' + col);
+      return;
+    }
     boardCopy[row][col].closed = !boardCopy[row][col].closed;
     setBoard(boardCopy);
   }

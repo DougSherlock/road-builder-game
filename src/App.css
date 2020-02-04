@@ -27,4 +27,5 @@
 
 .Road.closed {
   text-decoration: line-through;
+  background-color: orange;
 }
