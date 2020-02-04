@@ -38,8 +38,8 @@ function App() {
     ]
   ])
 
-  const traverse = () => {
-    alert('traverse called');
+  const driveRoads = () => {
+    alert('driveRoads - this function is not yet implemented');
   }
   const onRoadClicked = (e) => {
     let boardCopy = JSON.parse(JSON.stringify(board));
@@ -105,7 +105,7 @@ function App() {
       </div>
       <div>
       <p><strong>Click the 'Drive the Roads' button to determine if there are enough roads to connect all the cities.</strong></p>
-      <button onClick={traverse}>Drive the Roads</button>
+      <button onClick={driveRoads}>Drive the Roads</button>
       </div>
     </div>
   );
