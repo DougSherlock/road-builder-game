@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import './App.css';
 
 function App() {
-  
+  const [statusMsg, setStatusMsg] = useState("");
   const [board, setBoard] = useState(
   [
     [
@@ -38,13 +38,57 @@ function App() {
     ]
   ])
 
+  var stackCount = 0;
+  const driveRecursive = (startCity, cityConnMap, visited) => {
+    console.log('visiting ' + startCity);
+    visited.push(startCity);    
+    stackCount++;
+    if (stackCount > 100) {
+      return;
+    }
+    for (let city of cityConnMap[startCity]) {
+      if (visited.indexOf(city) < 0) {
+        driveRecursive(city, cityConnMap, visited);
+      }
+    }
+  }
+
   const driveRoads = () => {
-    alert('driveRoads - this function is not yet implemented');
+    //alert('driveRoads - this function is not yet implemented');
+    let roads = [];
+    for (let row = 0; row < board.length; row++) {
+      for (let col = 0; col < board[row].length; col++) {
+        let item = board[row][col];
+        if (item.type === 'Road' && !item.closed) {
+          //console.log(item);
+          roads.push(item);
+        }
+      }
+    }
+
+    //console.dir(roads);
+    let cityConnMap = new Array(9);
+    for (let i = 0; i < 9; i++) {
+      cityConnMap[i] = [];
+    }
+    
+    for (let road of roads) {      
+      cityConnMap[road.cities[0]].push(road.cities[1]);
+      cityConnMap[road.cities[1]].push(road.cities[0]);
+    }
+
+    // console.log(cityConnMap);
+    let visited = [];
+    let startCity = 0;
+    driveRecursive(startCity, cityConnMap, visited);
+    console.log(visited);
+    setStatusMsg("Given the current road closures, the cities you can reach from " 
+      + startCity + " are " + JSON.stringify(visited.filter(city => city !== startCity)));
   }
   const onRoadClicked = (e) => {
     let boardCopy = JSON.parse(JSON.stringify(board));
     const row = e.target.getAttribute('row');
-    if (row === undefined || row >= boardCopy.length) {
+    if (row === undefined || row >= boardCopy.length || boardCopy[row] === undefined) {
       alert('Row error: ' + row);
       return;
     }
@@ -72,41 +116,50 @@ function App() {
         <tr><td className="City">6</td><td className="Road">6:7</td><td className="City">7</td><td className="Road">7:8</td><td className="City">8</td></tr>
       </table> */}
       <table className="Board">
+        <tbody>
         {
           board.map((row, rowIndex) => {
-            return <tr>
+            return <tr key={rowIndex} >
               {
                 row.map((item, colIndex) => {
                   switch (item.type) 
                   {
                     case 'City':
-                      return <td className={item.type} row={rowIndex} col={colIndex} id={rowIndex+":"+colIndex}><span className="glyphicon glyphicon-home"></span> {item.id}</td>
+                      {
+                        const cls = item.type;
+                        return <td key={rowIndex+":"+colIndex} className={cls} row={rowIndex} col={colIndex} id={rowIndex+":"+colIndex}><span className="glyphicon glyphicon-home"></span> {item.id}</td>
+                      }
                     case 'Road':
-                      const cls = item.closed ? item.type + ' closed ' : item.type;                      
-                      return <td className={cls} 
-                        row={rowIndex} 
-                        col={colIndex} 
-                        id={rowIndex+":"+colIndex} 
-                        onClick={onRoadClicked}>
-                          <span className="glyphicon glyphicon-road"></span> {item.cities[0]+":"+item.cities[1]}
-                      </td>
+                      {
+                        const cls = item.closed ? item.type + ' closed ' : item.type;                      
+                        return <td key={rowIndex+":"+colIndex} 
+                          className={cls} 
+                          row={rowIndex} 
+                          col={colIndex} 
+                          id={rowIndex+":"+colIndex} 
+                          onClick={onRoadClicked}>
+                            <span className="glyphicon glyphicon-road"></span> {item.cities[0]+":"+item.cities[1]}
+                        </td>
+                      }
                     default:
-                      return <td className={item.type} row={rowIndex} col={colIndex} id={rowIndex+":"+colIndex} ></td>
+                      return <td key={rowIndex+":"+colIndex} className={item.type} row={rowIndex} col={colIndex} id={rowIndex+":"+colIndex} ></td>
                     }
                 })
               }
               </tr>
           })
         }
+        </tbody>
       </table>
       </div>
       <div>
       <p><strong>Click on a road to mark it as broken or closed.</strong></p>
       </div>
       <div>
-      <p><strong>Click the 'Drive the Roads' button to determine if there are enough roads to connect all the cities.</strong></p>
+      <p><strong>Click the 'Drive the Roads' button to determine which cities you can reach from city 0.</strong></p>
       <button onClick={driveRoads}>Drive the Roads</button>
       </div>
+      <div><strong>{statusMsg}</strong></div>
     </div>
   );
 }
