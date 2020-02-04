@@ -138,7 +138,7 @@ function App() {
                           col={colIndex} 
                           id={rowIndex+":"+colIndex} 
                           onClick={onRoadClicked}>
-                            <span className="glyphicon glyphicon-road"></span> {item.cities[0]+":"+item.cities[1]}
+                            <span className="glyphicon glyphicon-road" row={rowIndex} col={colIndex} ></span> {item.cities[0]+":"+item.cities[1]}
                         </td>
                       }
                     default:
